@@ -5,3 +5,4 @@ gql==3.5.0
 requests_toolbelt==1.0.0
 eth-account==0.12.2
 pandas==2.2.2
+pre-commit==3.7.1
