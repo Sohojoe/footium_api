@@ -62,8 +62,7 @@ def test_send_paging_query(gql_connection):
         some_query(skip: $skip, take: $take)
     }
     """
-    variables = {"skip": 0, "take": 2}
-    response = gql_connection.send_paging_query(query, variables=variables, take=2)
+    response = gql_connection.send_paging_query(query, page_size=2)
 
     # Check that the response is a list wrapped in a BoxList
     assert isinstance(response, BoxList)

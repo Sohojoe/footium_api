@@ -39,14 +39,14 @@ class GqlConnection:
         return boxed_response
 
     def send_paging_query(
-        self, query, variables=None, operation_name=None, skip=0, take=20, stop=None
+        self, query, variables={}, operation_name=None, skip=0, page_size=20, take=None
     ):
         gql_query = gql(query)
         results = None
         count = 0
         while True:
             variables["skip"] = skip
-            variables["take"] = take
+            variables["take"] = page_size
             response = self.client.execute(
                 gql_query, variable_values=variables, operation_name=operation_name
             )
@@ -62,11 +62,11 @@ class GqlConnection:
             else:
                 results.extend(boxed_response)
             count += len(boxed_response)
-            if stop is not None and count >= stop:
+            if take is not None and count >= take:
                 break
-            if len(boxed_response) < take:
+            if len(boxed_response) < page_size:
                 break
-            skip += take
+            skip += page_size
         return results
 
     def send_mutation(self, query, variables=None, operation_name=None):

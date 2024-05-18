@@ -38,13 +38,13 @@ def test_integration_send_paging_query(gql_connection):
     }
     """
     variables = {}
-    players_set_1 = gql_connection.send_paging_query(query, variables=variables, take=5, skip=0, stop=20)
+    players_set_1 = gql_connection.send_paging_query(query, variables=variables, page_size=5, skip=0, take=20)
 
     assert isinstance(players_set_1, BoxList)
     for player in players_set_1:
         assert 'id' in player
 
-    players_set_2 = gql_connection.send_paging_query(query, variables=variables, take=5, skip=10, stop=1)
+    players_set_2 = gql_connection.send_paging_query(query, variables=variables, page_size=5, skip=10, take=1)
     assert players_set_2[0].id == players_set_1[10].id
 
 
