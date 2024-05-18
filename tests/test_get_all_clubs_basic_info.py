@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock
-from footium_api.queries.get_all_clubs_basic_info import get_all_clubs_basic_info
+from footium_api.queries import get_all_clubs_basic_info
 from footium_api.gql_connection import GqlConnection
 
 @pytest.fixture
