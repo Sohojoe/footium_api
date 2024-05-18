@@ -12,3 +12,4 @@ codespell
 mypy
 nbqa
 types-requests
+pytest
