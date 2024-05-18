@@ -3,13 +3,14 @@ from gql.transport.requests import RequestsHTTPTransport
 from box import Box
 from gql.transport.exceptions import TransportQueryError
 from .report import ReportStrategy, LogReportStrategy
+from typing import Optional, Dict, Any, Union
 
 
 class GqlConnection:
     def __init__(
         self,
-        url="https://live.api.footium.club/api/graphql",
-        load_schema=None,
+        url: str = "https://live.api.footium.club/api/graphql",
+        load_schema: Optional[str] = None,
         report_strategy: ReportStrategy = LogReportStrategy(),
     ):
         self.url = url
@@ -30,7 +31,12 @@ class GqlConnection:
                     transport=self.transport, fetch_schema_from_transport=True
                 )
 
-    def send_query(self, query, variables=None, operation_name=None):
+    def send_query(
+        self, 
+        query: str, 
+        variables: Optional[Dict[str, Any]] = None, 
+        operation_name: Optional[str] = None
+    ) -> Box:
         gql_query = gql(query)
         response = self.client.execute(
             gql_query, variable_values=variables, operation_name=operation_name
@@ -39,8 +45,14 @@ class GqlConnection:
         return boxed_response
 
     def send_paging_query(
-        self, query, variables={}, operation_name=None, skip=0, page_size=20, take=None
-    ):
+        self, 
+        query: str, 
+        variables: Dict[str, Any] = {}, 
+        operation_name: Optional[str] = None, 
+        skip: int = 0, 
+        page_size: int = 20, 
+        take: Optional[int] = None
+    ) -> Union[Box, list]:
         gql_query = gql(query)
         results = None
         count = 0
@@ -69,7 +81,12 @@ class GqlConnection:
             skip += page_size
         return results
 
-    def send_mutation(self, query, variables=None, operation_name=None):
+    def send_mutation(
+        self, 
+        query: str, 
+        variables: Optional[Dict[str, Any]] = None, 
+        operation_name: Optional[str] = None
+    ) -> Box:
         gql_query = gql(query)
         try:
             response = self.client.execute(
