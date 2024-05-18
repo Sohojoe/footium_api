@@ -17,7 +17,6 @@ query Tactics_Query($clubId: Int, $isAcademy: Boolean) {
       lineupId
       formationSlotIndex
       isCaptain
-      __typename
     }
     club {
       players(where: {isAcademy: {equals: $isAcademy}}) {
@@ -38,7 +37,6 @@ query Tactics_Query($clubId: Int, $isAcademy: Boolean) {
           timestamp
           gamesSuspended
           isLatest
-          __typename
         }
         positionalRating(
           where: {isLatest: {equals: true}}
@@ -49,15 +47,11 @@ query Tactics_Query($clubId: Int, $isAcademy: Boolean) {
           rating
           relativeCompetence
           timestamp
-          __typename
         }
         timesteppedPlayerAttributes {
           condition
-          __typename
         }
-        __typename
       }
-      __typename
     }
     tactics {
       id
@@ -71,13 +65,9 @@ query Tactics_Query($clubId: Int, $isAcademy: Boolean) {
           slotIndex
           position
           coords
-          __typename
         }
-        __typename
       }
-      __typename
     }
-    __typename
   }
 }
     """
