@@ -7,7 +7,7 @@ setup(
     description="python api for the footium game",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/sohojoe/fooitum_api",
+    url="https://github.com/Sohojoe/footium_api",
     packages=find_packages(),
     install_requires=[
         "python-dotenv==1.0.1",
