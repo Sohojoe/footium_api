@@ -53,6 +53,7 @@ repos:
       require_serial: true
       # Print the number of files as a sanity-check
       verbose: true
+      # args: ["footium_api", "examples"]
   - repo: https://github.com/nbQA-dev/nbQA
     rev: 1.8.5
     hooks:

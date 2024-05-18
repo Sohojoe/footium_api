@@ -1,2 +1,2 @@
 # footium_api
-python api for footium 
+python api for footium

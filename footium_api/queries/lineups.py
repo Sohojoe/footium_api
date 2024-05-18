@@ -1,6 +1,7 @@
 from footium_api import GqlConnection
 
-def get_lineup_for_club(gql: GqlConnection, club_id:str, is_academy:bool):
+
+def get_lineup_for_club(gql: GqlConnection, club_id: int, is_academy: bool):
     query = """
 query Tactics_Query($clubId: Int, $isAcademy: Boolean) {
   # ...TacticsPageLayout_Fragment
@@ -79,11 +80,7 @@ query Tactics_Query($clubId: Int, $isAcademy: Boolean) {
   }
 }
     """
-    variables = {
-        "clubId": club_id,
-        "isAcademy": is_academy
-    }
+    variables = {"clubId": club_id, "isAcademy": is_academy}
     response = gql.send_query(query, variables)
     lineup = response.lineups[0]
     return lineup
-

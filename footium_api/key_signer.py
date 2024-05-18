@@ -5,6 +5,7 @@ from eth_account.messages import encode_defunct
 
 # warnings.filterwarnings("ignore", message="Network .* does not have a valid ChainId.")
 
+
 class KeySigner:
     def __init__(self, eth_address):
         # Load environment variables
@@ -26,37 +27,40 @@ class KeySigner:
         message_encoded = encode_defunct(text=message)
         signed_message = Account.sign_message(message_encoded, self.private_key_hex)
         signature = signed_message.signature.hex()
-        if not signature.startswith('0x'):
-            signature = '0x' + signature
+        if not signature.startswith("0x"):
+            signature = "0x" + signature
         return signature
-
 
     def validate_signed_message(self, signature, message) -> bool:
         if not self.eth_address:
-            raise RuntimeError("Ethereum address is not set, unable to verify messages.")
+            raise RuntimeError(
+                "Ethereum address is not set, unable to verify messages."
+            )
         try:
             message_encoded = encode_defunct(text=message)
-            signer_address = Account.recover_message(message_encoded, signature=signature)
+            signer_address = Account.recover_message(
+                message_encoded, signature=signature
+            )
             if signer_address.lower() == self.eth_address.lower():
                 return True
         except ValueError as e:
-            print("Signature validation failed:", str(e))        
+            print("Signature validation failed:", str(e))
         return False
-    
+
     def get_eth_address(self):
         return self.eth_address
 
-# Example usage
-if __name__ == "__main__":
-    message = "This is a message to sign."
-    etherscan_signature = "0x4f3d05998a46efb6981557410d3add94b2952f6a9e642907c76910c3cda6bbc558657ed0837af6f4eb918ea940158e1f10446517c05fc6dc40879e2dc17a726e1b"
-    # Create the KeySigner instance
-    key_signer = KeySigner()
-    signature = key_signer.sign_message(message)
-    print("Signature:", signature)
-    is_legit = key_signer.validate_signed_message(signature, message)
-    print("Is legit:", is_legit)
-    print(f"Etherscan signature: {etherscan_signature}")
-    print(f"Is etherscan equivalent to signature? {signature == etherscan_signature}")
-    print("---done---")    
 
+# # Example usage
+# if __name__ == "__main__":
+#     message = "This is a message to sign."
+#     etherscan_signature = "0x4f3d05998a46efb6981557410d3add94b2952f6a9e642907c76910c3cda6bbc558657ed0837af6f4eb918ea940158e1f10446517c05fc6dc40879e2dc17a726e1b"
+#     # Create the KeySigner instance
+#     key_signer = KeySigner()
+#     signature = key_signer.sign_message(message)
+#     print("Signature:", signature)
+#     is_legit = key_signer.validate_signed_message(signature, message)
+#     print("Is legit:", is_legit)
+#     print(f"Etherscan signature: {etherscan_signature}")
+#     print(f"Is etherscan equivalent to signature? {signature == etherscan_signature}")
+#     print("---done---")

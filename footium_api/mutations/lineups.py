@@ -1,8 +1,8 @@
 import json
 
-from box import Box
 from footium_api import GqlConnection
 from footium_api.queries import get_server_timestamp
+
 
 def prepare_lineup_to_sign(gql: GqlConnection, lineup):
     timestamp = get_server_timestamp(gql)
@@ -14,7 +14,7 @@ def prepare_lineup_to_sign(gql: GqlConnection, lineup):
                 "id": lineup.id,
                 "clubId": lineup.clubId,
                 "isSelected": lineup.isSelected,
-                "tacticsId": lineup.tacticsId
+                "tacticsId": lineup.tacticsId,
             },
             "tactics": {
                 "id": lineup.tactics.id,
@@ -23,7 +23,7 @@ def prepare_lineup_to_sign(gql: GqlConnection, lineup):
             },
             "playerLineups": lineup.playerLineups.to_list(),
         },
-        "timestamp": timestamp
+        "timestamp": timestamp,
     }
     json_message = json.dumps(message)
     return json_message
@@ -32,7 +32,7 @@ def prepare_lineup_to_sign(gql: GqlConnection, lineup):
 def submit_lineup(gql: GqlConnection, message, signed_message, address):
     query = """
 mutation SubmitAction($action: String!, $signature: String!, $address: String!) {
-    submitAction(action: $action, signature: $signature, address: $address) 
+    submitAction(action: $action, signature: $signature, address: $address)
     {
         code
         error

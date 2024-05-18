@@ -1,8 +1,8 @@
-from setup_environment import *
+from setup_environment import *  # noqa: F403
 from footium_api import GqlConnection, DiscordReportStrategy
 
 
-gql=GqlConnection(report_strategy=DiscordReportStrategy())
+gql = GqlConnection(report_strategy=DiscordReportStrategy())
 id = "03"
 
 gql.report.info(f"This is an info message; id: {id}")

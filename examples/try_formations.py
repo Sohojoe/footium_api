@@ -1,7 +1,6 @@
-from setup_environment import *
+from setup_environment import *  # noqa: F403
 from footium_api import GqlConnection
 from footium_api.queries import get_formations_as_pd
-import pandas as pd
 
 gql = GqlConnection()
 formations = get_formations_as_pd(gql)

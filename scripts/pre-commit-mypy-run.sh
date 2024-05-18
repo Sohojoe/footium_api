@@ -12,4 +12,4 @@ cd "$(dirname "$0")"/..
 
 pip install -q -e .[types]
 
-mypy
+mypy "$@"

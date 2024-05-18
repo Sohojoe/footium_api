@@ -3,7 +3,7 @@ import pandas as pd
 from footium_api import GqlConnection
 
 
-def get_clubs_tournament_for_owners(gql: GqlConnection, owner_ids: List[str]):
+def get_clubs_tournament_for_owners(gql: GqlConnection, owner_ids: List[int]):
     query = """
 query GetClubsByOwnerId($ownerIdFilter: IntFilter!, $take: Int, $skip: Int) {
   clubs(where: {ownerId: $ownerIdFilter}, take: $take, skip: $skip) {
@@ -49,7 +49,7 @@ query GetClubsByOwnerId($ownerIdFilter: IntFilter!, $take: Int, $skip: Int) {
         for club in clubs
     ]
     clubs = sorted(clubs, key=lambda x: (x["division"], x["position"]))
-    # conver to pandas dataframe
+    # convert to pandas dataframe
     # id is the index
     clubs = pd.DataFrame(clubs).set_index("id")
     return clubs
