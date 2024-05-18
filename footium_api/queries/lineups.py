@@ -1,7 +1,8 @@
+from box import Box
 from footium_api import GqlConnection
 
 
-def get_lineup_for_club(gql: GqlConnection, club_id: int, is_academy: bool):
+def get_lineup_for_club(gql: GqlConnection, club_id: int, is_academy: bool =False)-> Box:
     query = """
 query Tactics_Query($clubId: Int, $isAcademy: Boolean) {
   # ...TacticsPageLayout_Fragment
