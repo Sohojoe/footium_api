@@ -1,7 +1,8 @@
+from box import Box
 from footium_api import GqlConnection
 
 
-def get_lineup_for_club(gql: GqlConnection, club_id: int, is_academy: bool):
+def get_lineup_for_club(gql: GqlConnection, club_id: int, is_academy: bool =False)-> Box:
     query = """
 query Tactics_Query($clubId: Int, $isAcademy: Boolean) {
   # ...TacticsPageLayout_Fragment
@@ -16,7 +17,6 @@ query Tactics_Query($clubId: Int, $isAcademy: Boolean) {
       lineupId
       formationSlotIndex
       isCaptain
-      __typename
     }
     club {
       players(where: {isAcademy: {equals: $isAcademy}}) {
@@ -37,7 +37,6 @@ query Tactics_Query($clubId: Int, $isAcademy: Boolean) {
           timestamp
           gamesSuspended
           isLatest
-          __typename
         }
         positionalRating(
           where: {isLatest: {equals: true}}
@@ -48,15 +47,11 @@ query Tactics_Query($clubId: Int, $isAcademy: Boolean) {
           rating
           relativeCompetence
           timestamp
-          __typename
         }
         timesteppedPlayerAttributes {
           condition
-          __typename
         }
-        __typename
       }
-      __typename
     }
     tactics {
       id
@@ -70,13 +65,9 @@ query Tactics_Query($clubId: Int, $isAcademy: Boolean) {
           slotIndex
           position
           coords
-          __typename
         }
-        __typename
       }
-      __typename
     }
-    __typename
   }
 }
     """

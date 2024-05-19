@@ -47,7 +47,7 @@ query NextFixtures($clubIds: [Int!]!, $take: Int, $skip: Int) {
     # response = gql.send_query(query, variables)
     # fixtures = response['nextFixtures']
     max_games = max_games or len(club_ids) * 2
-    fixtures = gql.send_paging_query(query, variables, stop=max_games)
+    fixtures = gql.send_paging_query(query, variables, take=max_games)
 
     # Process the response into a DataFrame
     fixtures_data = []

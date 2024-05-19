@@ -6,7 +6,6 @@ def get_server_timestamp(gql: GqlConnection):
 query ServerMetadataNew {
   serverMetadata {
     timestamp
-    __typename
   }
 }
 """
