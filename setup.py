@@ -29,6 +29,11 @@ setup(
             "types-requests",
             "pytest",
         ],
+        "notebooks": [
+            "jupyter", 
+            "matplotlib", 
+            "fapi"
+        ],
     },
     python_requires=">=3.9",
     classifiers=[
