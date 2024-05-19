@@ -1,4 +1,4 @@
-from box import BoxList
+from box import Box, BoxList
 import pytest
 from footium_api.gql_connection import GqlConnection
 from footium_api.queries.formations import get_formations_as_pd, get_formations
@@ -16,9 +16,8 @@ expected_formations = [
 def gql():
     return GqlConnection()
 
-def test_integration_get_formations_as_pd(gql):
+def test_get_formations_as_pd(gql):
     formations = get_formations_as_pd(gql)
-
 
     assert isinstance(formations, pd.DataFrame)
     assert not formations.empty
@@ -43,10 +42,21 @@ def test_get_formations(gql):
     for f in expected_formations:
         assert any(f == form["name"] for form in formations)
     assert len(formations) == len(expected_formations)
+    
     for formation in formations:
+        assert isinstance(formation.id, int)
+        assert isinstance(formation.name, str)
+        assert isinstance(formation.slots, BoxList)
         assert len(formation.slots) == 11
+
         for slot in formation.slots:
-            assert all(key in slot for key in ["id", "formationId", "slotIndex", "position", "coords"])
-            assert slot["position"] in expected_positions
+            assert isinstance(slot.id, int)
+            assert isinstance(slot.formationId, int)
+            assert isinstance(slot.slotIndex, int)
+            assert isinstance(slot.position, str)
+            assert isinstance(slot.coords, BoxList)
+
+            assert slot.position in expected_positions
+
 
     
