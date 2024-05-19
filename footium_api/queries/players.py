@@ -3,14 +3,14 @@ import pandas as pd
 from footium_api import GqlConnection
 
 
-def get_players_in_clubs(gql: GqlConnection, club_ids: List[int]):
+def get_players_in_clubs(gql: GqlConnection, club_ids: List[int])->pd.DataFrame:
     filter = {
         "clubId": {"in": club_ids},
     }
     return get_players(gql, filter)
 
 
-def get_players(gql: GqlConnection, filter: dict):
+def get_players(gql: GqlConnection, filter: dict)->pd.DataFrame:
     query = """
 query GetPlayers($filter: PlayerWhereInput!, $take: Int, $skip: Int) {
   players(where: $filter, take: $take, skip: $skip) {
@@ -59,60 +59,62 @@ query GetPlayers($filter: PlayerWhereInput!, $take: Int, $skip: Int) {
       relativeCompetence
       rating
     }
-    playerStatsRecord{
-    appearances
-    goals
-    penaltiesScored
-    freeKicksScored
-    shotsOnTarget
-    shotsOffTarget
-    assists
-    saves
-    fouls
-    offsides
-    yellowCards
-    redCards
-    crosses
-    attemptedPasses
-    completedPasses
-    interceptedPasses
-    groundPasses
-    offsidePasses
-    shotsBlocked
-    totalShots
-    shotsFromInsideTheBox
-    normalShots
-    backHeelShots
-    divingHeaderShots
-    halfVolleyShots
-    volleyShots
-    lobShots
-    overheadKickShots
-    timeInPossessionMilliseconds
-    blocks
-    clearances
-    interceptions
-    failedInterceptions
-    fiftyFiftiesWon
-    fiftyFiftiesLost
-    duelsWon
-    duelsLost
-    attemptedDribbles
-    completedDribbles
-    carries
-    tacklesExecuted
-    tacklesReceived
-    playerTimeInfo
-    goalsConceded
-    isGlobal
-    playerId
-    shotAccuracy
-    passAccuracy
-    dribbleSuccessRate
-    }
   }
 }
 """
+
+# note: removed playerStatsRecord for now
+# playerStatsRecord{
+#     appearances
+#     goals
+#     penaltiesScored
+#     freeKicksScored
+#     shotsOnTarget
+#     shotsOffTarget
+#     assists
+#     saves
+#     fouls
+#     offsides
+#     yellowCards
+#     redCards
+#     crosses
+#     attemptedPasses
+#     completedPasses
+#     interceptedPasses
+#     groundPasses
+#     offsidePasses
+#     shotsBlocked
+#     totalShots
+#     shotsFromInsideTheBox
+#     normalShots
+#     backHeelShots
+#     divingHeaderShots
+#     halfVolleyShots
+#     volleyShots
+#     lobShots
+#     overheadKickShots
+#     timeInPossessionMilliseconds
+#     blocks
+#     clearances
+#     interceptions
+#     failedInterceptions
+#     fiftyFiftiesWon
+#     fiftyFiftiesLost
+#     duelsWon
+#     duelsLost
+#     attemptedDribbles
+#     completedDribbles
+#     carries
+#     tacklesExecuted
+#     tacklesReceived
+#     playerTimeInfo
+#     goalsConceded
+#     isGlobal
+#     playerId
+#     shotAccuracy
+#     passAccuracy
+#     dribbleSuccessRate
+# }
 
     variables = {
         "filter": filter,
@@ -182,6 +184,9 @@ query GetPlayers($filter: PlayerWhereInput!, $take: Int, $skip: Int) {
 
     # fix types
     players["assetId"] = pd.to_numeric(players["assetId"], errors="coerce").astype(
+        "Int64"
+    )
+    players["ownerId"] = pd.to_numeric(players["ownerId"], errors="coerce").astype(
         "Int64"
     )
     all_positions = [
