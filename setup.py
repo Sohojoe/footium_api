@@ -17,6 +17,7 @@ setup(
         "requests_toolbelt==1.0.0",
         "eth-account==0.12.2",
         "pandas==2.2.2",
+        "diskcache==5.6.3"
     ],
     extras_require={
         "dev": [
