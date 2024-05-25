@@ -11,14 +11,10 @@ def gql_connection():
         yield GqlConnection()
         MockClient.reset_mock()
 
-@pytest.fixture
-def cached_gql_connection(gql_connection):
-    return CachedGqlConnection(gql_connection, ttl=300, cache_dir='./test_cache')
-
-
-def test_send_query_success(cached_gql_connection):
+def test_send_query_success(gql_connection):
+    cached_gql_connection = CachedGqlConnection(gql_connection, ttl=0, cache_dir='./test_cache')
     mock_response = {'data': {'some_query': 'some_data'}}
-    cached_gql_connection.client.execute = MagicMock(return_value=mock_response)
+    gql_connection.client.execute = MagicMock(return_value=mock_response)
     
     query = """
     query {
@@ -29,12 +25,13 @@ def test_send_query_success(cached_gql_connection):
     
     assert isinstance(response, Box)
     assert response.data.some_query == 'some_data'
-    cached_gql_connection.client.execute.assert_called_once()
+    gql_connection.client.execute.assert_called_once()
 
 
-def test_send_query_with_variables(cached_gql_connection):
+def test_send_query_with_variables(gql_connection):
+    cached_gql_connection = CachedGqlConnection(gql_connection, ttl=0, cache_dir='./test_cache')
     mock_response = {'data': {'some_query': 'some_data'}}
-    cached_gql_connection.client.execute = MagicMock(return_value=mock_response)
+    gql_connection.client.execute = MagicMock(return_value=mock_response)
     
     query = """
     query($var: String) {
@@ -46,20 +43,25 @@ def test_send_query_with_variables(cached_gql_connection):
     
     assert isinstance(response, Box)
     assert response.data.some_query == 'some_data'
-    cached_gql_connection.client.execute.assert_called_once_with(
-        cached_gql_connection.client.execute.call_args[0][0],
+    gql_connection.client.execute.assert_called_once_with(
+        gql_connection.client.execute.call_args[0][0],
         variable_values=variables,
         operation_name=None
     )
 
 
-def test_send_paging_query(cached_gql_connection):
+def test_send_paging_query(gql_connection):
+    cached_gql_connection = CachedGqlConnection(gql_connection, ttl=0, cache_dir='./test_cache')
+    cached_gql_connection_ttl_300 = CachedGqlConnection(gql_connection, ttl=300, cache_dir='./test_cache')
     # Mock response for the first page
     mock_response_page1 = {'some_query': ['data1', 'data2']}
     # Mock response for the second page, which ends the pagination
     mock_response_page2 = {'some_query': []}
     
-    cached_gql_connection.client.execute = MagicMock(side_effect=[mock_response_page1, mock_response_page2])
+    gql_connection.client.execute = MagicMock(side_effect=[
+        mock_response_page1, mock_response_page2,
+        mock_response_page1, mock_response_page2,
+        ])
 
     query = """
     query($skip: Int, $take: Int) {
@@ -73,13 +75,25 @@ def test_send_paging_query(cached_gql_connection):
     assert len(response) == 2
     assert response[0] == 'data1'
     assert response[1] == 'data2'
-    assert cached_gql_connection.client.execute.call_count == 2  # Ensure the execute method was called twice
+    assert gql_connection.client.execute.call_count == 2  # Ensure the execute method was called twice
+
+    # check caching
+    # ...ttl_300 should load the response from the cache
+    # so call_count will not be incremented (2 and not 4)
+    response = cached_gql_connection_ttl_300.send_paging_query(query, page_size=2)
+    assert isinstance(response, BoxList)
+    assert len(response) == 2
+    assert response[0] == 'data1'
+    assert response[1] == 'data2'
+    assert gql_connection.client.execute.call_count == 2  # Ensure the execute method was called twice
 
 
 
-def test_send_mutation_success(cached_gql_connection):
+
+def test_send_mutation_success(gql_connection):
+    cached_gql_connection = CachedGqlConnection(gql_connection, ttl=0, cache_dir='./test_cache')
     mock_response = {'submitAction': {'result': 'success'}}
-    cached_gql_connection.client.execute = MagicMock(return_value=mock_response)
+    gql_connection.client.execute = MagicMock(return_value=mock_response)
     
     query = """
     mutation {
@@ -92,12 +106,13 @@ def test_send_mutation_success(cached_gql_connection):
     
     assert isinstance(response, Box)
     assert response.result == 'success'
-    cached_gql_connection.client.execute.assert_called_once()
+    gql_connection.client.execute.assert_called_once()
 
 
-def test_send_mutation_failure(cached_gql_connection):
-    cached_gql_connection.client.execute = MagicMock(side_effect=TransportQueryError('Error message'))
-    
+def test_send_mutation_failure(gql_connection):
+    cached_gql_connection = CachedGqlConnection(gql_connection, ttl=0, cache_dir='./test_cache')
+    gql_connection.client.execute = MagicMock(side_effect=TransportQueryError('Error message'))
+
     query = """
     mutation {
         submitAction {
@@ -111,4 +126,4 @@ def test_send_mutation_failure(cached_gql_connection):
     assert response.code == '500'
     assert response.error == 'Internal Server Error'
     assert response.message == 'Error message'
-    cached_gql_connection.client.execute.assert_called_once()
+    gql_connection.client.execute.assert_called_once()
