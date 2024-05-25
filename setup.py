@@ -32,7 +32,7 @@ setup(
         ],
         "notebooks": [
             "jupyter", 
-            "matplotlib", 
+            "seaborn", 
             "fapi"
         ],
     },
