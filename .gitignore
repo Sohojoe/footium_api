@@ -159,3 +159,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 .DS_Store
+notebooks/cache/**
+test_cache/**
+notebooks/_setup_notebook.ipynb

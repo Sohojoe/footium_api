@@ -1,12 +1,30 @@
-from typing import List
+from typing import Dict, List
 import pandas as pd
 from footium_api import GqlConnection
 
 
-def get_clubs_tournament_for_owners(gql: GqlConnection, owner_ids: List[int]):
+def get_clubs_tournament_for_club_ids(gql: GqlConnection, club_ids: List[int]) -> pd.DataFrame:
+    filter = {
+        "id": {"in": club_ids},
+    }
+    return get_clubs_tournament(gql, filter)
+
+def get_clubs_tournament_for_owners(gql: GqlConnection, owner_ids: List[int]) -> pd.DataFrame:
+    filter = {
+        "ownerId": {"in": owner_ids},
+    }
+    return get_clubs_tournament(gql, filter)
+
+def get_clubs_tournament_for_wallet(gql: GqlConnection, wallet_address: str) -> pd.DataFrame:
+    filter = {
+        "owner": {"is": {"address": {"equals": wallet_address}}},
+    }
+    return get_clubs_tournament(gql, filter)
+
+def get_clubs_tournament(gql: GqlConnection, filter: Dict) -> pd.DataFrame:
     query = """
-query GetClubsByOwnerId($ownerIdFilter: IntFilter!, $take: Int, $skip: Int) {
-  clubs(where: {ownerId: $ownerIdFilter}, take: $take, skip: $skip) {
+query GetClubs($filter: ClubWhereInput!, $take: Int, $skip: Int) {
+  clubs(where: $filter, take: $take, skip: $skip) {
     id
     name
     ownerId
@@ -29,7 +47,7 @@ query GetClubsByOwnerId($ownerIdFilter: IntFilter!, $take: Int, $skip: Int) {
 }
     """
     variables = {
-        "ownerIdFilter": {"in": owner_ids},
+        "filter": filter,
     }
     response = gql.send_paging_query(query, variables)
     clubs = response

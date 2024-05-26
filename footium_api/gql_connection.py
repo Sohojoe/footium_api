@@ -47,7 +47,7 @@ class GqlConnection:
     def send_paging_query(
         self, 
         query: str, 
-        variables: Dict[str, Any] = {}, 
+        variables: Dict[str, Any] = None, 
         operation_name: Optional[str] = None, 
         skip: int = 0, 
         page_size: int = 20, 
@@ -56,6 +56,7 @@ class GqlConnection:
         gql_query = gql(query)
         results = None
         count = 0
+        variables = variables or {}
         while True:
             variables["skip"] = skip
             variables["take"] = page_size
