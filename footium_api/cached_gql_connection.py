@@ -30,7 +30,7 @@ class CachedGqlConnection:
     def send_paging_query(
         self, 
         query: str, 
-        variables: Dict[str, Any] = {}, 
+        variables: Dict[str, Any] = None, 
         operation_name: Optional[str] = None, 
         skip: int = 0, 
         page_size: int = 20, 

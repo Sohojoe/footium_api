@@ -1,3 +1,5 @@
+import os
+import shutil
 import pytest
 from unittest.mock import patch, MagicMock
 from footium_api import GqlConnection, CachedGqlConnection
@@ -51,8 +53,11 @@ def test_send_query_with_variables(gql_connection):
 
 
 def test_send_paging_query(gql_connection):
-    cached_gql_connection = CachedGqlConnection(gql_connection, ttl=0, cache_dir='./test_cache')
-    cached_gql_connection_ttl_300 = CachedGqlConnection(gql_connection, ttl=300, cache_dir='./test_cache')
+    # delete the chache ./test_cache/test_send_paging_query
+    test_path = os.path.join('.', 'test_cache/test_send_paging_query')
+    if os.path.exists(test_path):
+        shutil.rmtree(test_path)
+    cached_gql_connection_ttl_300 = CachedGqlConnection(gql_connection, ttl=300, cache_dir=test_path)
     # Mock response for the first page
     mock_response_page1 = {'some_query': ['data1', 'data2']}
     # Mock response for the second page, which ends the pagination
@@ -68,7 +73,7 @@ def test_send_paging_query(gql_connection):
         some_query(skip: $skip, take: $take)
     }
     """
-    response = cached_gql_connection.send_paging_query(query, page_size=2)
+    response = cached_gql_connection_ttl_300.send_paging_query(query, page_size=2)
 
     # Check that the response is a list wrapped in a BoxList
     assert isinstance(response, BoxList)
