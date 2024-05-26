@@ -161,3 +161,4 @@ cython_debug/
 .DS_Store
 notebooks/cache/**
 test_cache/**
+notebooks/_setup_notebook.ipynb
