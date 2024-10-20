@@ -12,8 +12,7 @@ query Formations {
             id
             formationId
             slotIndex
-            position
-            coords
+            pitchPosition
         }
     }
 }
@@ -25,20 +24,22 @@ query Formations {
 
 def convert_formations_to_pd(formations_input) -> pd.DataFrame:
     outfield_positions = [
-        "CF",
-        "LW",
-        "RW",
-        "AM",
-        "LM",
-        "CM",
-        "RM",
-        "DM",
-        "LWB",
-        "RWB",
-        "LB",
-        "CB",
-        "RB",
-    ]
+            "RB",
+            "LB",
+            "CB",
+            "RWB",
+            "LWB",
+            "DM",
+            "RM",
+            "LM",
+            "CM",
+            "RW",
+            "LW",
+            "AM",
+            "RF",
+            "LF",
+            "CF",
+        ]
     all_positions = outfield_positions + ["GK"]
 
     formations = pd.DataFrame(columns=["Formation"] + all_positions)

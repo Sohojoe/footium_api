@@ -33,7 +33,6 @@ setup(
         "notebooks": [
             "jupyter", 
             "seaborn", 
-            "fapi"
         ],
     },
     python_requires=">=3.9",

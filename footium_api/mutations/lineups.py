@@ -1,13 +1,22 @@
 import json
+from datetime import datetime, timedelta
 
 from footium_api import GqlConnection
 from footium_api.queries import get_server_timestamp
 
 
 def prepare_lineup_to_sign(gql: GqlConnection, lineup):
-    timestamp = get_server_timestamp(gql)
+    current_time = get_server_timestamp(gql)
+    current_time_local = datetime.utcnow()
+    current_time = current_time / 1000.0
+    current_time = datetime.utcfromtimestamp(current_time)
+    timeout = 1000*5*60
+    expiration_time = current_time + timedelta(milliseconds=timeout)
+    # expiration_iso_string = expiration_time.isoformat() + 'Z'
+    expiration_iso_string = expiration_time.isoformat(timespec='milliseconds') + 'Z'
+
     message = {
-        "id": -1,
+        # "id": -1,
         "type": "LINEUP_SET",
         "data": {
             "lineup": {
@@ -23,11 +32,11 @@ def prepare_lineup_to_sign(gql: GqlConnection, lineup):
             },
             "playerLineups": lineup.playerLineups.to_list(),
         },
-        "timestamp": timestamp,
+        # "timestamp": timestamp,
+        "expirationTime": expiration_iso_string,
     }
-    json_message = json.dumps(message)
-    return json_message
-
+    return json.dumps(message)
+    # return message
 
 def submit_lineup(gql: GqlConnection, message, signed_message, address):
     query = """

@@ -63,8 +63,7 @@ query Tactics_Query($clubId: Int, $isAcademy: Boolean) {
         slots {
           id
           slotIndex
-          position
-          coords
+          pitchPosition
         }
       }
     }
