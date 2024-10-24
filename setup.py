@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="footium_api",
-    version="0.1.4",
+    version="0.1.5",
     author="SohoJoe",
     description="python api for the footium game",
     long_description=open("README.md").read(),
