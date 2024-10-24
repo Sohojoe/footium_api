@@ -15,7 +15,7 @@ setup(
         "python-box==7.1.1",
         "gql==3.5.0",
         "requests_toolbelt==1.0.0",
-        "eth-account==0.12.2",
+        "eth-account==0.13.4",
         "pandas==2.2.2",
         "diskcache==5.6.3"
     ],
