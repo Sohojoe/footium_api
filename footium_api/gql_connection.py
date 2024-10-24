@@ -4,6 +4,7 @@ from box import Box
 from gql.transport.exceptions import TransportQueryError
 from .report import ReportStrategy, LogReportStrategy
 from typing import Optional, Dict, Any, Union
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 
 class GqlConnection:
@@ -31,6 +32,7 @@ class GqlConnection:
                     transport=self.transport, fetch_schema_from_transport=True
                 )
 
+    @retry(stop=stop_after_attempt(8), wait=wait_exponential(multiplier=1, min=4, max=60))
     def send_query(
         self, 
         query: str, 
@@ -82,6 +84,7 @@ class GqlConnection:
             skip += page_size
         return results
 
+    @retry(stop=stop_after_attempt(8), wait=wait_exponential(multiplier=1, min=4, max=60))
     def send_mutation(
         self, 
         query: str, 
