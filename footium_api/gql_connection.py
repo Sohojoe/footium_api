@@ -32,7 +32,15 @@ class GqlConnection:
                     transport=self.transport, fetch_schema_from_transport=True
                 )
 
-    @retry(stop=stop_after_attempt(8), wait=wait_exponential(multiplier=1, min=4, max=60))
+    def print_error(retry_state):
+        exception = retry_state.outcome.exception()
+        print(f"Attempt {retry_state.attempt_number} failed with error: {exception}")
+
+    @retry(
+        stop=stop_after_attempt(8),
+        wait=wait_exponential(multiplier=1, min=4, max=60),
+        before_sleep=print_error
+    )
     def send_query(
         self, 
         query: str, 
@@ -46,6 +54,11 @@ class GqlConnection:
         boxed_response = Box(response)
         return boxed_response
 
+    @retry(
+        stop=stop_after_attempt(8),
+        wait=wait_exponential(multiplier=1, min=4, max=60),
+        before_sleep=print_error
+    )
     def send_paging_query(
         self, 
         query: str, 
@@ -84,7 +97,11 @@ class GqlConnection:
             skip += page_size
         return results
 
-    @retry(stop=stop_after_attempt(8), wait=wait_exponential(multiplier=1, min=4, max=60))
+    @retry(
+        stop=stop_after_attempt(8),
+        wait=wait_exponential(multiplier=1, min=4, max=60),
+        before_sleep=print_error
+    )
     def send_mutation(
         self, 
         query: str, 

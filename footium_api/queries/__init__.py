@@ -5,6 +5,7 @@ from .club_tournaments import get_clubs_tournament_for_owners, get_clubs_tournam
 from .players import get_players, get_players_in_clubs
 from .all_clubs_basic_info import get_all_clubs_basic_info
 from .fixtures import get_next_fixtures
+from .training_slots import get_training_slots
 
 __all__ = [
     "get_formations",
@@ -16,4 +17,5 @@ __all__ = [
     "get_players_in_clubs",
     "get_all_clubs_basic_info",
     "get_next_fixtures",
+    "get_training_slots",
 ]

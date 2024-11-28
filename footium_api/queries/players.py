@@ -190,22 +190,28 @@ query GetPlayers($filter: PlayerWhereInput!, $take: Int, $skip: Int) {
         "Int64"
     )
     all_positions = [
-        "CF",
-        "LW",
-        "RW",
-        "AM",
-        "LM",
-        "CM",
-        "RM",
-        "DM",
-        "LWB",
-        "RWB",
+        "RB",
         "LB",
         "CB",
-        "RB",
+        "RWB",
+        "LWB",
+        "DM",
+        "RM",
+        "LM",
+        "CM",
+        "RW",
+        "LW",
+        "AM",
+        "RF",
+        "LF",
+        "CF",
         "GK",
     ]
     for column in all_positions:
         players[column] = pd.to_numeric(players[column], errors="coerce")
+
+    # create two new columns, topRating and topPosition
+    players['topRating'] = players[all_positions].max(axis=1)
+    players['topPosition'] = players[all_positions].idxmax(axis=1)
 
     return players
