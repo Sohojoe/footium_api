@@ -39,7 +39,7 @@ query GetPlayers($filter: PlayerWhereInput!, $take: Int, $skip: Int) {
     isPartOfAcademyMerkleTree
     clubName: club{name}
     clubOwnerId: club{ownerId}
-    playerAttributes (orderBy: [{timestamp: desc}], take: 1){
+    playerAttributes: timesteppedPlayerAttributes {
       age
       leadership
       condition
@@ -132,7 +132,8 @@ query GetPlayers($filter: PlayerWhereInput!, $take: Int, $skip: Int) {
     )
 
     # unwrap playerAttributes
-    attributes_list = [attr[0] for attr in players["playerAttributes"] if attr]
+    # attributes_list = [attr[0] for attr in players["playerAttributes"] if attr]
+    attributes_list = players["playerAttributes"]
     combined_data_with_ids = [
         {**attr, "id": player_id}
         for attr, player_id in zip(attributes_list, players.index)
