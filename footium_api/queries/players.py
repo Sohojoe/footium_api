@@ -119,7 +119,7 @@ query GetPlayers($filter: PlayerWhereInput!, $take: Int, $skip: Int) {
     variables = {
         "filter": filter,
     }
-    response = gql.send_paging_query(query, variables)
+    response = gql.send_paging_query(query, variables, page_size=50)
     players = response
     players = pd.DataFrame(players).set_index("id")
 
