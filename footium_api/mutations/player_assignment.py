@@ -21,12 +21,12 @@ def prepare_assign_players_to_sign(
             "playerIds": player_ids,
         }
     message_to_sign = {
-        "type": "ASSIGN_PLAYERS_TO_CLUB",
+        "type": "REGISTER_PLAYERS_TO_CLUB",
         "data": json.dumps(data, separators=(',', ':'), ensure_ascii=False),
         "expirationTime": expiration_iso_string,
     }
     message_to_send = {
-        "type": "ASSIGN_PLAYERS_TO_CLUB",
+        "type": "REGISTER_PLAYERS_TO_CLUB",
         "data": data,
         "expirationTime": expiration_iso_string,
     }
@@ -50,12 +50,12 @@ def prepare_unassign_players_to_sign(
             "playerIds": player_ids,
         }
     message_to_sign = {
-        "type": "UNASSIGN_PLAYERS_FROM_CLUB",
+        "type": "UNREGISTER_PLAYERS_FROM_CLUB",
         "data": json.dumps(data, separators=(',', ':'), ensure_ascii=False),
         "expirationTime": expiration_iso_string,
     }
     message_to_send = {
-        "type": "UNASSIGN_PLAYERS_FROM_CLUB",
+        "type": "UNREGISTER_PLAYERS_FROM_CLUB",
         "data": data,
         "expirationTime": expiration_iso_string,
     }
