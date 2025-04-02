@@ -3,6 +3,8 @@ import os
 import requests
 from dotenv import load_dotenv
 from logging import getLogger
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 logger = getLogger(__name__)
 
@@ -46,10 +48,14 @@ class DiscordReportStrategy(ReportStrategy):
         self.error_url = os.getenv("REPORT_ERROR_WEBHOOK")
         self.username = os.getenv("DiscorfReportStrategy")
 
+        self.session = requests.Session()
+        retries = Retry(total=5, backoff_factor=1, status_forcelist=[500, 502, 503, 504], allowed_methods=["POST"])
+        self.session.mount("https://", HTTPAdapter(max_retries=retries))
+
     def send_message(self, url: str, content: str):
         data = {"content": content, "username": self.username}
-        result = requests.post(url, json=data)
-        if result.status_code != 200:
+        result = self.session.post(url, json=data, timeout=10)
+        if result.status_code not in (200, 204):
             logger.error(
                 f"Error sending message to {url}, status_code: {result.status_code}, text: {result.text}, content: {content}"
             )
